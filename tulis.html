@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amager Studio — Tulis Cerita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <style>
+        :root { --primary: #000; --bg: #f9f9f9; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: white; width: 100%; max-width: 500px; padding: 40px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .logo { font-size: 24px; font-weight: 800; letter-spacing: -1px; margin-bottom: 20px; display: block; text-decoration: none; color: #000; text-align: center; }
+        h2 { text-align: center; margin-bottom: 30px; font-weight: 800; font-size: 28px; }
+        label { font-size: 14px; font-weight: 600; color: #666; display: block; margin-bottom: 8px; margin-left: 5px; }
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; border-radius: 12px; background: #fdfdfd; font-family: inherit; font-size: 16px; box-sizing: border-box; transition: 0.3s; }
+        input:focus, textarea:focus { border-color: #000; outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(0,0,0,0.02); }
+        button { width: 100%; padding: 16px; background: #000; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .footer-link { text-align: center; margin-top: 20px; font-size: 14px; }
+        .footer-link a { color: #666; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <a href="./index.html" class="logo">AMAGER.</a>
+    <h2>Buat Cerita Baru</h2>
+    
+    <label>Link Artikel (Slug)</label>
+    <input type="text" id="slug" placeholder="misal: berita-hari-ini" oninput="this.value = this.value.toLowerCase().replace(/\s+/g, '-')">
+    
+    <label>Judul Cerita</label>
+    <input type="text" id="judul" placeholder="Apa judulnya?">
+    
+    <label>Isi Cerita</label>
+    <textarea id="konten" rows="6" placeholder="Tuliskan ide kamu..."></textarea>
+    
+    <button onclick="publish()">Terbitkan Sekarang</button>
+    
+    <div class="footer-link">
+        <a href="./index.html">← Kembali ke Beranda</a>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCTvPUfC1xSlup78dtXfs0AFogOUheAi-E",
+        authDomain: "tikfoll.firebaseapp.com",
+        databaseURL: "https://tikfoll-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "tikfoll",
+        storageBucket: "tikfoll.firebasestorage.app",
+        messagingSenderId: "210219887620",
+        appId: "1:210219887620:web:ad7c29c37ff0f74f3ed951"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function publish() {
+        const slug = document.getElementById('slug').value;
+        const judul = document.getElementById('judul').value;
+        const konten = document.getElementById('konten').value;
+
+        if (slug && judul && konten) {
+            db.ref('posts/' + slug).set({ judul, konten }, (err) => {
+                if(err) {
+                    alert("Gagal terbit!");
+                } else {
+                    alert("Berhasil! Tulisan kamu sudah tayang.");
+                    window.location.href = "./index.html#" + slug;
+                }
+            });
+        } else {
+            alert("Harap isi semua kolom!");
+        }
+    }
+</script>
+</body>
+</html>
